@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>MADAC Healthcare — Reviews under 60 sec</title>
+
+  <!-- PWA & Mobile Web Tags -->
+  <meta name="theme-color" content="#0b192c" />
+  <meta name="description" content="Share an honest Google review for Matoshri Aasarabai Darade Ayurved College & Hospital in under 60 seconds." />
+
+  <!-- Tailwind CSS & Font Awesome Icons -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <!-- Google Fonts: Serif & Modern Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- React & Babel -->
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            serif: ['"Instrument Serif"', 'serif'],
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          },
+          colors: {
+            navy: {
+              900: '#0b192c',
+              800: '#132438',
+            },
+            cream: {
+              50: '#fcfaf2',
+              100: '#f6f1e3',
+              200: '#ebe1cb',
+              300: '#ded0b0',
+            }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-cream-50 text-slate-900 font-sans min-h-screen antialiased selection:bg-amber-200">
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+
+    // Hardcoded Official MADAC Details & Updated Logo URL
+    const PERMANENT_CONFIG = {
+      businessName: "MADAC Healthcare & Diagnostics",
+      subTitle: "Matoshri Aasarabai Darade Ayurved College & Hospital",
+      logoUrl: "https://madac.co.in/wp-content/uploads/2020/10/cropped-logomain.png",
+      googleReviewUrl: "https://search.google.com/local/writereview?placeid=ChIJRfXzd6453DsRRQN4R5Kuok0",
+    };
+
+    // 5-Question Dynamic Matrix
+    const SERVICE_QUESTIONS = {
+      "General Consultation": {
+        q1: "How satisfied are you with your doctor's consultation?",
+        q1_opts: ["Very Satisfied", "Satisfied", "Neutral", "Dissatisfied", "Excellent Service"],
+        q2: "Doctor / Specialist Name (Optional)",
+        q2_placeholder: "e.g. Dr. Sharma / Consulting Physician",
+        q3: "What impressed you about the doctor or care received?",
+        q3_opts: ["Attentive Listening", "Clear Explanation", "Accurate Diagnosis", "No Unnecessary Tests", "Polite Behavior"],
+        q4: "How was the appointment & waiting time?",
+        q4_opts: ["On-time Appointment", "Minimal Wait Time", "Smooth Registration", "Comfortable Waiting Area"],
+        q5: "Any additional words for the medical team or hospital?"
+      },
+      "Diagnostics & Lab Tests": {
+        q1: "How satisfied are you with the lab / diagnostic testing process?",
+        q1_opts: ["Very Satisfied", "Satisfied", "Neutral", "Dissatisfied", "Hygienic & Fast"],
+        q2: "Which test did you get done? (Optional)",
+        q2_placeholder: "e.g. Blood Test, X-Ray, Sonography...",
+        q3: "How was the sample collection or test procedure?",
+        q3_opts: ["Painless Blood Draw", "Hygienic Equipment", "Gentle Technician", "High Safety Standards"],
+        q4: "How was the report delivery experience?",
+        q4_opts: ["Fast Same-Day Delivery", "Digital Report Delivery", "Clear & Legible Report", "Affordable Test Package"],
+        q5: "Any comments on lab hygiene or staff efficiency?"
+      },
+      "Health Checkup Package": {
+        q1: "How would you rate your Master Health Checkup package experience?",
+        q1_opts: ["Very Satisfied", "Satisfied", "Neutral", "Comprehensive", "Value for Money"],
+        q2: "Package Name / Doctor Reference (Optional)",
+        q2_placeholder: "e.g. Full Body Checkup, Executive Package...",
+        q3: "What did you appreciate most about the health package?",
+        q3_opts: ["Comprehensive Coverage", "Well-Organized Flow", "Fast Turnaround Time", "Value for Money"],
+        q4: "How was the staff guidance during tests?",
+        q4_opts: ["Guided Step-by-Step", "Helpful Support Staff", "Clean Facility", "Doctor Consultation Included"],
+        q5: "Any feedback regarding the health package?"
+      },
+      "Ayurvedic Treatment": {
+        q1: "How satisfied are you with your Ayurvedic consultation or therapy?",
+        q1_opts: ["Very Satisfied", "Satisfied", "Peaceful & Authentic", "Neutral", "Dissatisfied"],
+        q2: "Ayurvedic Practitioner / Therapist Name (Optional)",
+        q2_placeholder: "e.g. Dr. Patil / Panchakarma Specialist...",
+        q3: "What was the best part of the treatment?",
+        q3_opts: ["Authentic Panchakarma", "Relaxing Therapy", "Pure Herbal Medicines", "Personalized Diet Advice"],
+        q4: "How was the facility ambiance & cleanliness?",
+        q4_opts: ["Calming & Peaceful Ambiance", "Sterilized & Clean Setup", "Traditional & Professional", "Attentive Care"],
+        q5: "Any specific health improvement or feedback to mention?"
+      },
+      "Pharmacy / Medicine": {
+        q1: "How satisfied are you with the medicine fulfillment service?",
+        q1_opts: ["Very Satisfied", "Satisfied", "Quick Billing", "Neutral", "Dissatisfied"],
+        q2: "Pharmacist / Store Staff Name (Optional)",
+        q2_placeholder: "e.g. Counter Staff Name...",
+        q3: "What stood out about the pharmacy service?",
+        q3_opts: ["All Medicines Available", "Genuine Stock", "Fast Checkout", "Proper Dosage Explanation"],
+        q4: "What additional benefits did you receive?",
+        q4_opts: ["Good Discounts / INR Billing", "Home Delivery Service", "Clear Expiry Dates", "Polite Counter Service"],
+        q5: "Any additional comments on medicine availability?"
+      }
+    };
+
+    function MadacReviewApp() {
+      const [step, setStep] = useState(1);
+      const [selectedService, setSelectedService] = useState("General Consultation");
+      const [copiedIndex, setCopiedIndex] = useState(null);
+      const [isGenerating, setIsGenerating] = useState(false);
+      const [showSettingsModal, setShowSettingsModal] = useState(false);
+      const [clientApiKey, setClientApiKey] = useState("");
+
+      useEffect(() => {
+        const savedKey = localStorage.getItem("madac_client_gemini_key");
+        if (savedKey) setClientApiKey(savedKey);
+      }, []);
+
+      const saveApiKey = (e) => {
+        e.preventDefault();
+        localStorage.setItem("madac_client_gemini_key", clientApiKey.trim());
+        setShowSettingsModal(false);
+        alert("API Key saved! AI requests will now use your account balance.");
+      };
+
+      const [answers, setAnswers] = useState({
+        q1_selection: "Very Satisfied",
+        q2_text: "",
+        q3_chips: [],
+        q4_chips: [],
+        q5_note: ""
+      });
+
+      const [drafts, setDrafts] = useState([]);
+
+      const activeQuestions = SERVICE_QUESTIONS[selectedService];
+
+      const toggleChip = (category, item) => {
+        setAnswers(prev => ({
+          ...prev,
+          [category]: prev[category].includes(item)
+            ? prev[category].filter(i => i !== item)
+            : [...prev[category], item]
+        }));
+      };
+
+      const handleGenerateReviews = async () => {
+        setIsGenerating(true);
+
+        const allHighlights = [...answers.q3_chips, ...answers.q4_chips];
+        const hText = allHighlights.length > 0 ? allHighlights.join(", ").toLowerCase() : "excellent care";
+        const detailMention = answers.q2_text ? ` (${answers.q2_text})` : "";
+        const extraNote = answers.q5_note ? ` ${answers.q5_note}` : "";
+
+        // Client API Execution
+        if (clientApiKey.trim()) {
+          try {
+            const prompt = `Generate 3 authentic, natural Google Reviews for ${PERMANENT_CONFIG.businessName} (${PERMANENT_CONFIG.subTitle}). Service: ${selectedService}${detailMention}. Experience rating: ${answers.q1_selection}. Key highlights: ${hText}.${extraNote}. Return ONLY a JSON array containing 3 strings.`;
+            
+            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${clientApiKey.trim()}`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                contents: [{ parts: [{ text: prompt }] }]
+              })
+            });
+
+            const data = await response.json();
+            const textResponse = data.candidates?.[0]?.content?.parts?.[0]?.text;
+
+            if (textResponse) {
+              const cleanedText = textResponse.replace(/```json|```/g, '').trim();
+              const parsed = JSON.parse(cleanedText);
+              
+              setDrafts([
+                { type: "Short & Direct", badge: "Client API", text: parsed[0] },
+                { type: "Detailed Experience", badge: "Client API", text: parsed[1] },
+                { type: "Comprehensive Review", badge: "Client API", text: parsed[2] }
+              ]);
+
+              setIsGenerating(false);
+              setStep(2);
+              return;
+            }
+          } catch(err) {
+            console.warn("Client API Key failed, fallback used.", err);
+          }
+        }
+
+        // Smart Template Fallback
+        setTimeout(() => {
+          setDrafts([
+            {
+              type: "Short & Direct",
+              badge: "Quick Read",
+              text: `Visited ${PERMANENT_CONFIG.businessName} for ${selectedService.toLowerCase()}${detailMention}. I was ${answers.q1_selection.toLowerCase()} with the service. Appreciated the ${hText}!`
+            },
+            {
+              type: "Detailed Experience",
+              badge: "Most Popular",
+              text: `I had a very positive experience at ${PERMANENT_CONFIG.subTitle} during my ${selectedService.toLowerCase()}${detailMention}. Everything was smooth and ${answers.q1_selection.toLowerCase()}. Highly valued their ${hText}.${extraNote} Highly recommended!`
+            },
+            {
+              type: "Comprehensive Review",
+              badge: "Full Details",
+              text: `Extremely satisfied with the ${selectedService.toLowerCase()} at ${PERMANENT_CONFIG.businessName}.${detailMention ? ` Special thanks for ${detailMention}.` : ''} Key highlights: ${hText}.${extraNote} Clean facility and professional medical team overall.`
+            }
+          ]);
+
+          setIsGenerating(false);
+          setStep(2);
+        }, 600);
+      };
+
+      const copyToClipboard = (text, idx) => {
+        navigator.clipboard.writeText(text);
+        setCopiedIndex(idx);
+        setTimeout(() => setCopiedIndex(null), 2000);
+      };
+
+      const handlePostToGoogle = (text, idx) => {
+        navigator.clipboard.writeText(text);
+        setCopiedIndex(idx);
+        window.open(PERMANENT_CONFIG.googleReviewUrl, '_blank');
+        setStep(3);
+      };
+
+      return (
+        <div className="min-h-screen flex flex-col justify-between">
+          
+          {/* DARK NAVY HERO HEADER */}
+          <header className="bg-navy-900 text-white pt-8 pb-16 px-4 text-center relative border-b border-navy-800">
+            
+            {/* SETTINGS GEAR ICON */}
+            <button
+              onClick={() => setShowSettingsModal(true)}
+              className="absolute top-4 right-4 p-2 text-slate-400 hover:text-amber-300 bg-navy-800/80 rounded-full transition-colors"
+              title="Client API Settings"
+            >
+              <i className="fa-solid fa-gear text-sm"></i>
+            </button>
+
+            {/* SQUIRCLE EMBLEM CREST LOGO */}
+            <div className="mx-auto w-20 h-20 sm:w-24 sm:h-24 bg-white rounded-2xl shadow-xl p-2 flex items-center justify-center overflow-hidden border-2 border-amber-400/30">
+              <img 
+                src={PERMANENT_CONFIG.logoUrl} 
+                alt="MADAC Logo" 
+                className="w-full h-full object-contain"
+              />
+            </div>
+
+            {/* BUSINESS HEADING */}
+            <h1 className="font-serif text-3xl sm:text-4xl mt-4 tracking-wide font-normal text-white">
+              {PERMANENT_CONFIG.businessName}
+            </h1>
+            <p className="text-xs text-slate-300 mt-1 max-w-sm mx-auto font-light leading-relaxed">
+              Loved your visit? Share an honest Google review in <span className="text-amber-400 font-semibold">under 60 seconds</span>.
+            </p>
+          </header>
+
+          {/* FLOATING CREAM STATS CARD */}
+          <div className="max-w-xl mx-auto -mt-8 px-4 w-full relative z-10">
+            <div className="bg-cream-100 border border-cream-200 rounded-2xl p-4 shadow-lg grid grid-cols-3 divide-x divide-cream-300 text-center">
+              <div>
+                <div className="font-serif text-xl sm:text-2xl font-bold text-navy-900">1,200+</div>
+                <div className="text-[10px] sm:text-xs text-slate-600">Reviews helped</div>
+              </div>
+              <div>
+                <div className="font-serif text-xl sm:text-2xl font-bold text-navy-900">under 60s</div>
+                <div className="text-[10px] sm:text-xs text-slate-600">Avg. time</div>
+              </div>
+              <div>
+                <div className="font-serif text-xl sm:text-2xl font-bold text-navy-900">4.9</div>
+                <div className="text-[10px] sm:text-xs text-slate-600">Rating</div>
+              </div>
+            </div>
+          </div>
+
+          {/* MAIN CONTENT AREA */}
+          <main className="max-w-xl mx-auto px-4 py-6 w-full flex-1 space-y-6">
+            
+            {step === 1 && (
+              <div className="space-y-6">
+                
+                {/* SERVICE SELECTOR CHIPS */}
+                <div className="bg-white border border-cream-200 p-4 rounded-2xl shadow-sm space-y-2">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-navy-900">
+                    Select Service Experienced
+                  </label>
+                  <div className="flex flex-wrap gap-2">
+                    {Object.keys(SERVICE_QUESTIONS).map((service) => (
+                      <button
+                        key={service}
+                        type="button"
+                        onClick={() => {
+                          setSelectedService(service);
+                          setAnswers({
+                            q1_selection: "Very Satisfied",
+                            q2_text: "",
+                            q3_chips: [],
+                            q4_chips: [],
+                            q5_note: ""
+                          });
+                        }}
+                        className={`px-3 py-2 text-xs rounded-xl border transition-all ${
+                          selectedService === service
+                            ? "bg-navy-900 border-navy-900 text-white font-semibold shadow-sm"
+                            : "bg-cream-50 border-cream-200 text-slate-700 hover:border-cream-300"
+                        }`}
+                      >
+                        {service}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* 5-QUESTION FLOW */}
+                <div className="space-y-5">
+                  
+                  {/* Q1: Satisfaction */}
+                  <div className="flex gap-3 items-start">
+                    <span className="w-6 h-6 rounded-full bg-navy-900 text-white flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">1</span>
+                    <div className="space-y-2 flex-1">
+                      <h2 className="font-serif text-lg font-bold text-navy-900">{activeQuestions.q1}</h2>
+                      <div className="flex flex-wrap gap-2">
+                        {activeQuestions.q1_opts.map((opt) => (
+                          <button
+                            key={opt}
+                            type="button"
+                            onClick={() => setAnswers({ ...answers, q1_selection: opt })}
+                            className={`px-3 py-1.5 text-xs rounded-full border transition-all ${
+                              answers.q1_selection === opt
+                                ? "bg-cream-200 border-amber-400 font-semibold text-navy-900"
+                                : "bg-cream-100/60 border-cream-200 text-slate-700 hover:bg-cream-100"
+                            }`}
+                          >
+                            {opt}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Q2: Optional Name / Item */}
+                  <div className="flex gap-3 items-start">
+                    <span className="w-6 h-6 rounded-full bg-navy-900 text-white flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">2</span>
+                    <div className="space-y-2 flex-1">
+                      <h2 className="font-serif text-lg font-bold text-navy-900">{activeQuestions.q2}</h2>
+                      <input
+                        type="text"
+                        value={answers.q2_text}
+                        onChange={(e) => setAnswers({ ...answers, q2_text: e.target.value })}
+                        placeholder={activeQuestions.q2_placeholder}
+                        className="w-full bg-white border border-cream-200 rounded-xl p-3 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-navy-900"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Q3: Highlights 1 */}
+                  <div className="flex gap-3 items-start">
+                    <span className="w-6 h-6 rounded-full bg-navy-900 text-white flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">3</span>
+                    <div className="space-y-2 flex-1">
+                      <h2 className="font-serif text-lg font-bold text-navy-900">{activeQuestions.q3}</h2>
+                      <div className="flex flex-wrap gap-2">
+                        {activeQuestions.q3_opts.map((opt) => {
+                          const active = answers.q3_chips.includes(opt);
+                          return (
+                            <button
+                              key={opt}
+                              type="button"
+                              onClick={() => toggleChip("q3_chips", opt)}
+                              className={`px-3 py-1.5 text-xs rounded-full border transition-all ${
+                                active
+                                  ? "bg-cream-200 border-amber-400 font-semibold text-navy-900"
+                                  : "bg-cream-100/60 border-cream-200 text-slate-700 hover:bg-cream-100"
+                              }`}
+                            >
+                              {active ? "✓ " : ""}{opt}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Q4: Highlights 2 */}
+                  <div className="flex gap-3 items-start">
+                    <span className="w-6 h-6 rounded-full bg-navy-900 text-white flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">4</span>
+                    <div className="space-y-2 flex-1">
+                      <h2 className="font-serif text-lg font-bold text-navy-900">{activeQuestions.q4}</h2>
+                      <div className="flex flex-wrap gap-2">
+                        {activeQuestions.q4_opts.map((opt) => {
+                          const active = answers.q4_chips.includes(opt);
+                          return (
+                            <button
+                              key={opt}
+                              type="button"
+                              onClick={() => toggleChip("q4_chips", opt)}
+                              className={`px-3 py-1.5 text-xs rounded-full border transition-all ${
+                                active
+                                  ? "bg-cream-200 border-amber-400 font-semibold text-navy-900"
+                                  : "bg-cream-100/60 border-cream-200 text-slate-700 hover:bg-cream-100"
+                              }`}
+                            >
+                              {active ? "✓ " : ""}{opt}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Q5: Feedback Note */}
+                  <div className="flex gap-3 items-start">
+                    <span className="w-6 h-6 rounded-full bg-navy-900 text-white flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">5</span>
+                    <div className="space-y-2 flex-1">
+                      <h2 className="font-serif text-lg font-bold text-navy-900">{activeQuestions.q5}</h2>
+                      <textarea
+                        value={answers.q5_note}
+                        onChange={(e) => setAnswers({ ...answers, q5_note: e.target.value })}
+                        placeholder="Share your extra thoughts..."
+                        rows={2}
+                        className="w-full bg-white border border-cream-200 rounded-xl p-3 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-navy-900 resize-none"
+                      />
+                    </div>
+                  </div>
+
+                </div>
+
+                <button
+                  onClick={handleGenerateReviews}
+                  disabled={isGenerating}
+                  className="w-full py-4 bg-navy-900 hover:bg-navy-800 text-white font-bold rounded-2xl shadow-xl flex items-center justify-center gap-2 transition-all active:scale-[0.99] text-sm"
+                >
+                  {isGenerating ? (
+                    <>
+                      <i className="fa-solid fa-circle-notch fa-spin"></i> Generating 3 Review Drafts...
+                    </>
+                  ) : (
+                    <>
+                      <i className="fa-solid fa-wand-magic-sparkles text-amber-400"></i> Generate AI Review Options
+                    </>
+                  )}
+                </button>
+
+              </div>
+            )}
+
+            {/* STEP 2: REVIEW OPTIONS */}
+            {step === 2 && (
+              <div className="space-y-4">
+                <div className="flex items-center justify-between border-b border-cream-200 pb-3">
+                  <h2 className="font-serif text-xl font-bold text-navy-900">Select Your Google Review</h2>
+                  <button 
+                    onClick={() => setStep(1)} 
+                    className="text-xs text-slate-600 hover:text-navy-900 font-semibold underline"
+                  >
+                    Edit Answers
+                  </button>
+                </div>
+
+                {drafts.map((draft, idx) => (
+                  <div key={idx} className="bg-white border border-cream-200 p-4 rounded-2xl space-y-3 shadow-sm">
+                    <div className="flex items-center justify-between">
+                      <span className="font-serif font-bold text-navy-900 text-sm">{draft.type}</span>
+                      <span className="text-[10px] bg-cream-200 text-navy-900 px-2.5 py-0.5 rounded-full font-semibold">
+                        {draft.badge}
+                      </span>
+                    </div>
+
+                    <textarea
+                      value={draft.text}
+                      onChange={(e) => {
+                        const newDrafts = [...drafts];
+                        newDrafts[idx].text = e.target.value;
+                        setDrafts(newDrafts);
+                      }}
+                      rows={3}
+                      className="w-full bg-cream-50 border border-cream-200 rounded-xl p-3 text-xs text-slate-800 focus:outline-none focus:border-navy-900 resize-none"
+                    />
+
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => copyToClipboard(draft.text, idx)}
+                        className="flex-1 py-2.5 bg-cream-200 hover:bg-cream-300 text-navy-900 text-xs font-semibold rounded-xl flex items-center justify-center gap-1.5 transition-colors"
+                      >
+                        <i className={`fa-solid ${copiedIndex === idx ? 'fa-check text-green-700' : 'fa-copy'}`}></i>
+                        {copiedIndex === idx ? "Copied!" : "Copy Text"}
+                      </button>
+
+                      <button
+                        onClick={() => handlePostToGoogle(draft.text, idx)}
+                        className="flex-1 py-2.5 bg-navy-900 hover:bg-navy-800 text-white text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 shadow-md transition-colors"
+                      >
+                        <i className="fa-solid fa-arrow-up-right-from-square text-amber-400"></i> Copy & Post
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* STEP 3: SUCCESS */}
+            {step === 3 && (
+              <div className="bg-white border border-cream-200 p-6 rounded-2xl text-center space-y-4 shadow-md">
+                <div className="w-14 h-14 bg-green-100 text-green-700 rounded-full flex items-center justify-center mx-auto">
+                  <i className="fa-solid fa-circle-check text-3xl"></i>
+                </div>
+
+                <div>
+                  <h2 className="font-serif text-2xl font-bold text-navy-900">Review Copied to Clipboard!</h2>
+                  <p className="text-xs text-slate-600 mt-1 max-w-xs mx-auto">
+                    MADAC Healthcare Google Review page has opened. Long press in the review box, paste your text, and click Post!
+                  </p>
+                </div>
+
+                <div className="flex gap-2 pt-2">
+                  <button
+                    onClick={() => setStep(1)}
+                    className="flex-1 py-3 bg-cream-200 text-navy-900 text-xs font-semibold rounded-xl"
+                  >
+                    Write Another
+                  </button>
+                  <a
+                    href={PERMANENT_CONFIG.googleReviewUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex-1 py-3 bg-navy-900 text-white text-xs font-bold rounded-xl flex items-center justify-center gap-1"
+                  >
+                    Reopen Google <i className="fa-solid fa-arrow-up-right-from-square text-amber-400 text-[10px]"></i>
+                  </a>
+                </div>
+              </div>
+            )}
+
+          </main>
+
+          {/* CLIENT API MODAL */}
+          {showSettingsModal && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-navy-900/80 backdrop-blur-sm">
+              <div className="bg-white border border-cream-200 w-full max-w-sm rounded-2xl p-5 shadow-2xl space-y-4">
+                <div className="flex items-center justify-between border-b border-cream-200 pb-3">
+                  <h3 className="font-bold text-sm text-navy-900 flex items-center gap-2">
+                    <i className="fa-solid fa-key text-amber-500"></i> Client API Credits Setting
+                  </h3>
+                  <button onClick={() => setShowSettingsModal(false)} className="text-slate-400 hover:text-navy-900">
+                    <i className="fa-solid fa-xmark"></i>
+                  </button>
+                </div>
+
+                <form onSubmit={saveApiKey} className="space-y-3">
+                  <div>
+                    <label className="block text-xs font-semibold text-navy-900 mb-1">
+                      Google Gemini API Key
+                    </label>
+                    <input
+                      type="password"
+                      value={clientApiKey}
+                      onChange={(e) => setClientApiKey(e.target.value)}
+                      placeholder="AIzaSy..."
+                      className="w-full bg-cream-50 border border-cream-200 rounded-xl p-2.5 text-xs text-slate-900 font-mono focus:outline-none focus:border-navy-900"
+                    />
+                    <p className="text-[10px] text-slate-500 mt-1.5 leading-normal">
+                      Enter your Google Gemini key to bill AI generation credits directly to your account balance.
+                    </p>
+                  </div>
+
+                  <div className="flex gap-2 pt-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setClientApiKey("");
+                        localStorage.removeItem("madac_client_gemini_key");
+                        setShowSettingsModal(false);
+                      }}
+                      className="flex-1 py-2 bg-cream-200 text-navy-900 text-xs font-semibold rounded-xl"
+                    >
+                      Clear Key
+                    </button>
+                    <button
+                      type="submit"
+                      className="flex-1 py-2 bg-navy-900 text-white text-xs font-bold rounded-xl shadow-md"
+                    >
+                      Save Key
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          )}
+
+          {/* FOOTER */}
+          <footer className="py-6 text-center text-xs text-slate-500 border-t border-cream-200/80 bg-white">
+            <span>Powered by MADAC Review Agent &bull; Fast Google Reviews</span>
+          </footer>
+
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<MadacReviewApp />);
+  </script>
+</body>
+</html>
