@@ -13,10 +13,10 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
-  <!-- Google Fonts: Serif & Modern Sans -->
+  <!-- Google Fonts: Modern Premium Outfit & Clean Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
 
   <!-- React & Babel -->
   <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
@@ -28,8 +28,8 @@
       theme: {
         extend: {
           fontFamily: {
-            serif: ['"Instrument Serif"', 'serif'],
-            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            heading: ['"Outfit"', 'sans-serif'],
+            sans: ['"Inter"', 'sans-serif'],
           },
           colors: {
             navy: {
@@ -54,7 +54,7 @@
   <script type="text/babel">
     const { useState, useEffect } = React;
 
-    // Hardcoded Official MADAC Details & Updated Logo URL
+    // Hardcoded Official MADAC Details & Logo URL
     const PERMANENT_CONFIG = {
       businessName: "MADAC Healthcare & Diagnostics",
       subTitle: "Matoshri Aasarabai Darade Ayurved College & Hospital",
@@ -267,11 +267,11 @@
               />
             </div>
 
-            {/* BUSINESS HEADING */}
-            <h1 className="font-serif text-3xl sm:text-4xl mt-4 tracking-wide font-normal text-white">
+            {/* BUSINESS HEADING WITH OUTFIT FONT */}
+            <h1 className="font-heading text-2xl sm:text-3xl mt-4 tracking-tight font-bold text-white">
               {PERMANENT_CONFIG.businessName}
             </h1>
-            <p className="text-xs text-slate-300 mt-1 max-w-sm mx-auto font-light leading-relaxed">
+            <p className="text-xs text-slate-300 mt-1 max-w-sm mx-auto font-normal leading-relaxed">
               Loved your visit? Share an honest Google review in <span className="text-amber-400 font-semibold">under 60 seconds</span>.
             </p>
           </header>
@@ -280,21 +280,21 @@
           <div className="max-w-xl mx-auto -mt-8 px-4 w-full relative z-10">
             <div className="bg-cream-100 border border-cream-200 rounded-2xl p-4 shadow-lg grid grid-cols-3 divide-x divide-cream-300 text-center">
               <div>
-                <div className="font-serif text-xl sm:text-2xl font-bold text-navy-900">1,200+</div>
-                <div className="text-[10px] sm:text-xs text-slate-600">Reviews helped</div>
+                <div className="font-heading text-xl sm:text-2xl font-bold text-navy-900">1,200+</div>
+                <div className="text-[10px] sm:text-xs text-slate-600 font-medium">Reviews helped</div>
               </div>
               <div>
-                <div className="font-serif text-xl sm:text-2xl font-bold text-navy-900">under 60s</div>
-                <div className="text-[10px] sm:text-xs text-slate-600">Avg. time</div>
+                <div className="font-heading text-xl sm:text-2xl font-bold text-navy-900">under 60s</div>
+                <div className="text-[10px] sm:text-xs text-slate-600 font-medium">Avg. time</div>
               </div>
               <div>
-                <div className="font-serif text-xl sm:text-2xl font-bold text-navy-900">4.9</div>
-                <div className="text-[10px] sm:text-xs text-slate-600">Rating</div>
+                <div className="font-heading text-xl sm:text-2xl font-bold text-navy-900">4.9</div>
+                <div className="text-[10px] sm:text-xs text-slate-600 font-medium">Rating</div>
               </div>
             </div>
           </div>
 
-          {/* MAIN CONTENT AREA */}
+          {}
           <main className="max-w-xl mx-auto px-4 py-6 w-full flex-1 space-y-6">
             
             {step === 1 && (
@@ -302,7 +302,7 @@
                 
                 {/* SERVICE SELECTOR CHIPS */}
                 <div className="bg-white border border-cream-200 p-4 rounded-2xl shadow-sm space-y-2">
-                  <label className="block text-xs font-bold uppercase tracking-wider text-navy-900">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-navy-900 font-heading">
                     Select Service Experienced
                   </label>
                   <div className="flex flex-wrap gap-2">
@@ -339,7 +339,7 @@
                   <div className="flex gap-3 items-start">
                     <span className="w-6 h-6 rounded-full bg-navy-900 text-white flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">1</span>
                     <div className="space-y-2 flex-1">
-                      <h2 className="font-serif text-lg font-bold text-navy-900">{activeQuestions.q1}</h2>
+                      <h2 className="font-heading text-base font-bold text-navy-900">{activeQuestions.q1}</h2>
                       <div className="flex flex-wrap gap-2">
                         {activeQuestions.q1_opts.map((opt) => (
                           <button
@@ -363,13 +363,13 @@
                   <div className="flex gap-3 items-start">
                     <span className="w-6 h-6 rounded-full bg-navy-900 text-white flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">2</span>
                     <div className="space-y-2 flex-1">
-                      <h2 className="font-serif text-lg font-bold text-navy-900">{activeQuestions.q2}</h2>
+                      <h2 className="font-heading text-base font-bold text-navy-900">{activeQuestions.q2}</h2>
                       <input
                         type="text"
                         value={answers.q2_text}
                         onChange={(e) => setAnswers({ ...answers, q2_text: e.target.value })}
                         placeholder={activeQuestions.q2_placeholder}
-                        className="w-full bg-white border border-cream-200 rounded-xl p-3 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-navy-900"
+                        className="w-full bg-white border border-cream-200 rounded-xl p-3 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-navy-900 font-sans"
                       />
                     </div>
                   </div>
@@ -378,7 +378,7 @@
                   <div className="flex gap-3 items-start">
                     <span className="w-6 h-6 rounded-full bg-navy-900 text-white flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">3</span>
                     <div className="space-y-2 flex-1">
-                      <h2 className="font-serif text-lg font-bold text-navy-900">{activeQuestions.q3}</h2>
+                      <h2 className="font-heading text-base font-bold text-navy-900">{activeQuestions.q3}</h2>
                       <div className="flex flex-wrap gap-2">
                         {activeQuestions.q3_opts.map((opt) => {
                           const active = answers.q3_chips.includes(opt);
@@ -405,7 +405,7 @@
                   <div className="flex gap-3 items-start">
                     <span className="w-6 h-6 rounded-full bg-navy-900 text-white flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">4</span>
                     <div className="space-y-2 flex-1">
-                      <h2 className="font-serif text-lg font-bold text-navy-900">{activeQuestions.q4}</h2>
+                      <h2 className="font-heading text-base font-bold text-navy-900">{activeQuestions.q4}</h2>
                       <div className="flex flex-wrap gap-2">
                         {activeQuestions.q4_opts.map((opt) => {
                           const active = answers.q4_chips.includes(opt);
@@ -432,13 +432,13 @@
                   <div className="flex gap-3 items-start">
                     <span className="w-6 h-6 rounded-full bg-navy-900 text-white flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">5</span>
                     <div className="space-y-2 flex-1">
-                      <h2 className="font-serif text-lg font-bold text-navy-900">{activeQuestions.q5}</h2>
+                      <h2 className="font-heading text-base font-bold text-navy-900">{activeQuestions.q5}</h2>
                       <textarea
                         value={answers.q5_note}
                         onChange={(e) => setAnswers({ ...answers, q5_note: e.target.value })}
                         placeholder="Share your extra thoughts..."
                         rows={2}
-                        className="w-full bg-white border border-cream-200 rounded-xl p-3 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-navy-900 resize-none"
+                        className="w-full bg-white border border-cream-200 rounded-xl p-3 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-navy-900 resize-none font-sans"
                       />
                     </div>
                   </div>
@@ -448,7 +448,7 @@
                 <button
                   onClick={handleGenerateReviews}
                   disabled={isGenerating}
-                  className="w-full py-4 bg-navy-900 hover:bg-navy-800 text-white font-bold rounded-2xl shadow-xl flex items-center justify-center gap-2 transition-all active:scale-[0.99] text-sm"
+                  className="w-full py-4 bg-navy-900 hover:bg-navy-800 text-white font-bold rounded-2xl shadow-xl flex items-center justify-center gap-2 transition-all active:scale-[0.99] text-sm font-heading tracking-wide"
                 >
                   {isGenerating ? (
                     <>
@@ -464,11 +464,11 @@
               </div>
             )}
 
-            {/* STEP 2: REVIEW OPTIONS */}
+            {}
             {step === 2 && (
               <div className="space-y-4">
                 <div className="flex items-center justify-between border-b border-cream-200 pb-3">
-                  <h2 className="font-serif text-xl font-bold text-navy-900">Select Your Google Review</h2>
+                  <h2 className="font-heading text-xl font-bold text-navy-900">Select Your Google Review</h2>
                   <button 
                     onClick={() => setStep(1)} 
                     className="text-xs text-slate-600 hover:text-navy-900 font-semibold underline"
@@ -480,7 +480,7 @@
                 {drafts.map((draft, idx) => (
                   <div key={idx} className="bg-white border border-cream-200 p-4 rounded-2xl space-y-3 shadow-sm">
                     <div className="flex items-center justify-between">
-                      <span className="font-serif font-bold text-navy-900 text-sm">{draft.type}</span>
+                      <span className="font-heading font-bold text-navy-900 text-sm">{draft.type}</span>
                       <span className="text-[10px] bg-cream-200 text-navy-900 px-2.5 py-0.5 rounded-full font-semibold">
                         {draft.badge}
                       </span>
@@ -494,13 +494,13 @@
                         setDrafts(newDrafts);
                       }}
                       rows={3}
-                      className="w-full bg-cream-50 border border-cream-200 rounded-xl p-3 text-xs text-slate-800 focus:outline-none focus:border-navy-900 resize-none"
+                      className="w-full bg-cream-50 border border-cream-200 rounded-xl p-3 text-xs text-slate-800 focus:outline-none focus:border-navy-900 resize-none font-sans"
                     />
 
                     <div className="flex gap-2">
                       <button
                         onClick={() => copyToClipboard(draft.text, idx)}
-                        className="flex-1 py-2.5 bg-cream-200 hover:bg-cream-300 text-navy-900 text-xs font-semibold rounded-xl flex items-center justify-center gap-1.5 transition-colors"
+                        className="flex-1 py-2.5 bg-cream-200 hover:bg-cream-300 text-navy-900 text-xs font-semibold rounded-xl flex items-center justify-center gap-1.5 transition-colors font-sans"
                       >
                         <i className={`fa-solid ${copiedIndex === idx ? 'fa-check text-green-700' : 'fa-copy'}`}></i>
                         {copiedIndex === idx ? "Copied!" : "Copy Text"}
@@ -508,7 +508,7 @@
 
                       <button
                         onClick={() => handlePostToGoogle(draft.text, idx)}
-                        className="flex-1 py-2.5 bg-navy-900 hover:bg-navy-800 text-white text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 shadow-md transition-colors"
+                        className="flex-1 py-2.5 bg-navy-900 hover:bg-navy-800 text-white text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 shadow-md transition-colors font-heading"
                       >
                         <i className="fa-solid fa-arrow-up-right-from-square text-amber-400"></i> Copy & Post
                       </button>
@@ -526,7 +526,7 @@
                 </div>
 
                 <div>
-                  <h2 className="font-serif text-2xl font-bold text-navy-900">Review Copied to Clipboard!</h2>
+                  <h2 className="font-heading text-2xl font-bold text-navy-900">Review Copied to Clipboard!</h2>
                   <p className="text-xs text-slate-600 mt-1 max-w-xs mx-auto">
                     MADAC Healthcare Google Review page has opened. Long press in the review box, paste your text, and click Post!
                   </p>
@@ -535,7 +535,7 @@
                 <div className="flex gap-2 pt-2">
                   <button
                     onClick={() => setStep(1)}
-                    className="flex-1 py-3 bg-cream-200 text-navy-900 text-xs font-semibold rounded-xl"
+                    className="flex-1 py-3 bg-cream-200 text-navy-900 text-xs font-semibold rounded-xl font-sans"
                   >
                     Write Another
                   </button>
@@ -543,7 +543,7 @@
                     href={PERMANENT_CONFIG.googleReviewUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="flex-1 py-3 bg-navy-900 text-white text-xs font-bold rounded-xl flex items-center justify-center gap-1"
+                    className="flex-1 py-3 bg-navy-900 text-white text-xs font-bold rounded-xl flex items-center justify-center gap-1 font-heading"
                   >
                     Reopen Google <i className="fa-solid fa-arrow-up-right-from-square text-amber-400 text-[10px]"></i>
                   </a>
@@ -553,12 +553,13 @@
 
           </main>
 
+          {}
           {/* CLIENT API MODAL */}
           {showSettingsModal && (
             <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-navy-900/80 backdrop-blur-sm">
               <div className="bg-white border border-cream-200 w-full max-w-sm rounded-2xl p-5 shadow-2xl space-y-4">
                 <div className="flex items-center justify-between border-b border-cream-200 pb-3">
-                  <h3 className="font-bold text-sm text-navy-900 flex items-center gap-2">
+                  <h3 className="font-heading font-bold text-sm text-navy-900 flex items-center gap-2">
                     <i className="fa-solid fa-key text-amber-500"></i> Client API Credits Setting
                   </h3>
                   <button onClick={() => setShowSettingsModal(false)} className="text-slate-400 hover:text-navy-900">
@@ -591,13 +592,13 @@
                         localStorage.removeItem("madac_client_gemini_key");
                         setShowSettingsModal(false);
                       }}
-                      className="flex-1 py-2 bg-cream-200 text-navy-900 text-xs font-semibold rounded-xl"
+                      className="flex-1 py-2 bg-cream-200 text-navy-900 text-xs font-semibold rounded-xl font-sans"
                     >
                       Clear Key
                     </button>
                     <button
                       type="submit"
-                      className="flex-1 py-2 bg-navy-900 text-white text-xs font-bold rounded-xl shadow-md"
+                      className="flex-1 py-2 bg-navy-900 text-white text-xs font-bold rounded-xl shadow-md font-heading"
                     >
                       Save Key
                     </button>
